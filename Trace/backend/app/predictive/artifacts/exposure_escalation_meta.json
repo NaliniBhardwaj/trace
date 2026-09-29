@@ -1,0 +1,132 @@
+{
+  "model_id": "exposure_escalation",
+  "model_name": "exposure_escalation",
+  "model_type": "HistGradientBoostingClassifier",
+  "model_version": "phase15-pred-v1.0.0",
+  "training_data_source": "synthetic",
+  "generator_version": "phase15-synth-v1.0.0",
+  "feature_schema_version": "phase15-v1",
+  "seed": 42,
+  "horizon_minutes": 30,
+  "task": "classification",
+  "target": "label_exposure_escalation",
+  "feature_columns": [
+    "risk_ord",
+    "h2s_ppm",
+    "h2s_slope_short",
+    "h2s_slope_medium",
+    "h2s_roll_mean_short",
+    "h2s_roll_max_medium",
+    "temperature_c",
+    "humidity_pct",
+    "ventilation_proxy",
+    "occupancy",
+    "time_since_cleaning_proxy",
+    "cleaning_state_ord",
+    "neighbor_max_risk",
+    "neighbor_mean_h2s",
+    "deterioration_trend",
+    "hist_deterioration_rate"
+  ],
+  "description": "Probability zone/worker exposure risk increases within horizon",
+  "n_train": 678,
+  "n_test": 174,
+  "metrics": {
+    "accuracy": 0.7241379310344828,
+    "precision": 0.5161290322580645,
+    "recall": 0.32653061224489793,
+    "f1": 0.4,
+    "roc_auc": 0.772734693877551,
+    "confusion_matrix": [
+      [
+        110,
+        15
+      ],
+      [
+        33,
+        16
+      ]
+    ],
+    "prediction_distribution": {
+      "pred_positive_rate": 0.1781609195402299,
+      "true_positive_rate": 0.28160919540229884
+    }
+  },
+  "baseline": {
+    "accuracy": 0.7183908045977011,
+    "f1": 0.0
+  },
+  "feature_importance": [
+    {
+      "feature": "risk_ord",
+      "importance": 0.0
+    },
+    {
+      "feature": "h2s_ppm",
+      "importance": 0.0
+    },
+    {
+      "feature": "h2s_slope_short",
+      "importance": 0.0
+    },
+    {
+      "feature": "h2s_slope_medium",
+      "importance": 0.0
+    },
+    {
+      "feature": "h2s_roll_mean_short",
+      "importance": 0.0
+    },
+    {
+      "feature": "h2s_roll_max_medium",
+      "importance": 0.0
+    },
+    {
+      "feature": "temperature_c",
+      "importance": 0.0
+    },
+    {
+      "feature": "humidity_pct",
+      "importance": 0.0
+    },
+    {
+      "feature": "ventilation_proxy",
+      "importance": 0.0
+    },
+    {
+      "feature": "occupancy",
+      "importance": 0.0
+    },
+    {
+      "feature": "time_since_cleaning_proxy",
+      "importance": 0.0
+    },
+    {
+      "feature": "cleaning_state_ord",
+      "importance": 0.0
+    },
+    {
+      "feature": "neighbor_max_risk",
+      "importance": 0.0
+    },
+    {
+      "feature": "neighbor_mean_h2s",
+      "importance": 0.0
+    },
+    {
+      "feature": "deterioration_trend",
+      "importance": 0.0
+    },
+    {
+      "feature": "hist_deterioration_rate",
+      "importance": 0.0
+    }
+  ],
+  "artifact": "exposure_escalation.joblib",
+  "trained_at": "2026-09-26T22:29:59.957985+00:00",
+  "synthetic_training_notice": "Models trained exclusively on synthetic operational data. Metrics do not represent real-world site performance. Experimental decision-support only.",
+  "sklearn_version": "1.8.0",
+  "joblib_version": "1.6.0",
+  "python_version": "3.12.3",
+  "numpy_version": "2.4.4"
+}

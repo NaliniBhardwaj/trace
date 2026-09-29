@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "TRACE",
+    "slug": "sentinel-h2s",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "sentinel",
+    "platforms": [
+      "android",
+      "ios",
+      "web"
+    ],
+    "android": {
+      "package": "com.sentinel.h2sdosimeter",
+      "permissions": [
+        "CAMERA"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#0E1512"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.sentinel.h2sdosimeter",
+      "infoPlist": {
+        "NSCameraUsageDescription": "SENTINEL uses the camera to scan strip QR codes and capture colorimetric strip images for exposure estimation.",
+        "NSMotionUsageDescription": "SENTINEL can optionally monitor motion to detect if a worker has been still for an unusually long time (dead man's switch) as an H2S safety feature."
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "SENTINEL uses the camera to scan strip QR codes and capture colorimetric strip photos."
+        }
+      ]
+    ],
+    "extra": {
+      "_comment_apiUrl": "Leave apiUrl unset for the normal case (phone + laptop on the same Wi-Fi). src/config.ts auto-detects the LAN IP from Expo's own dev-server host. Only set apiUrl below to override that (e.g. a deployed/tunnelled backend)."
+    }
+  }
+}

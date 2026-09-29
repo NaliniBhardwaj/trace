@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Test/cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Build/cache
+.cache/
+tmp/
+temp/

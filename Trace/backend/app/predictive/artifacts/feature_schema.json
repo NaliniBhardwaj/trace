@@ -1,0 +1,43 @@
+{
+  "zone_features": [
+    "risk_ord",
+    "h2s_ppm",
+    "h2s_slope_short",
+    "h2s_slope_medium",
+    "h2s_roll_mean_short",
+    "h2s_roll_max_medium",
+    "temperature_c",
+    "humidity_pct",
+    "ventilation_proxy",
+    "occupancy",
+    "time_since_cleaning_proxy",
+    "cleaning_state_ord",
+    "neighbor_max_risk",
+    "neighbor_mean_h2s",
+    "deterioration_trend",
+    "hist_deterioration_rate"
+  ],
+  "worker_features": [
+    "recent_exposure",
+    "cumulative_workload",
+    "recent_task_count",
+    "time_since_last_rotation_min",
+    "time_since_rest_min",
+    "recovery_rest_proxy",
+    "rotation_count",
+    "historical_exposure_trend",
+    "zone_risk_ord",
+    "zone_h2s_ppm",
+    "availability_ord",
+    "n_skills",
+    "qualified_ord"
+  ],
+  "horizons_minutes": [
+    15,
+    30,
+    60
+  ],
+  "default_horizon": 30,
+  "training_data_source": "synthetic",
+  "model_version": "phase15-pred-v1.0.0"
+}

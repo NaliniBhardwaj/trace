@@ -1,0 +1,106 @@
+{
+  "model_id": "worker_exposure_trend",
+  "model_name": "worker_exposure_trend",
+  "model_type": "HistGradientBoostingRegressor",
+  "model_version": "phase15-pred-v1.0.0",
+  "training_data_source": "synthetic",
+  "generator_version": "phase15-synth-v1.0.0",
+  "feature_schema_version": "phase15-v1",
+  "seed": 42,
+  "horizon_minutes": 30,
+  "task": "regression",
+  "target": "label_exposure_trend",
+  "feature_columns": [
+    "recent_exposure",
+    "cumulative_workload",
+    "recent_task_count",
+    "time_since_last_rotation_min",
+    "time_since_rest_min",
+    "recovery_rest_proxy",
+    "rotation_count",
+    "historical_exposure_trend",
+    "zone_risk_ord",
+    "zone_h2s_ppm",
+    "availability_ord",
+    "n_skills",
+    "qualified_ord"
+  ],
+  "description": "Expected exposure change over horizon",
+  "n_train": 1582,
+  "n_test": 406,
+  "metrics": {
+    "mae": 2.1394186720021913,
+    "rmse": 5.6941658638084185,
+    "r2": 0.08535460182847554,
+    "prediction_distribution": {
+      "pred_mean": 0.0981444261365277,
+      "true_mean": 1.3580049261083744,
+      "pred_std": 0.7713577024645824
+    }
+  },
+  "baseline": {
+    "mae": 3.1094666213691182,
+    "rmse": 5.953930167824065
+  },
+  "feature_importance": [
+    {
+      "feature": "recent_exposure",
+      "importance": 0.0
+    },
+    {
+      "feature": "cumulative_workload",
+      "importance": 0.0
+    },
+    {
+      "feature": "recent_task_count",
+      "importance": 0.0
+    },
+    {
+      "feature": "time_since_last_rotation_min",
+      "importance": 0.0
+    },
+    {
+      "feature": "time_since_rest_min",
+      "importance": 0.0
+    },
+    {
+      "feature": "recovery_rest_proxy",
+      "importance": 0.0
+    },
+    {
+      "feature": "rotation_count",
+      "importance": 0.0
+    },
+    {
+      "feature": "historical_exposure_trend",
+      "importance": 0.0
+    },
+    {
+      "feature": "zone_risk_ord",
+      "importance": 0.0
+    },
+    {
+      "feature": "zone_h2s_ppm",
+      "importance": 0.0
+    },
+    {
+      "feature": "availability_ord",
+      "importance": 0.0
+    },
+    {
+      "feature": "n_skills",
+      "importance": 0.0
+    },
+    {
+      "feature": "qualified_ord",
+      "importance": 0.0
+    }
+  ],
+  "artifact": "worker_exposure_trend.joblib",
+  "trained_at": "2026-09-26T22:29:59.957985+00:00",
+  "synthetic_training_notice": "Models trained exclusively on synthetic operational data. Metrics do not represent real-world site performance. Experimental decision-support only.",
+  "sklearn_version": "1.8.0",
+  "joblib_version": "1.6.0",
+  "python_version": "3.12.3",
+  "numpy_version": "2.4.4"
+}

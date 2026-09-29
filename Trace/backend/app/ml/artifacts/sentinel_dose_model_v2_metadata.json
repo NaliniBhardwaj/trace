@@ -1,0 +1,79 @@
+{
+  "model_type": "HistGradientBoosting",
+  "model_version": "SENTINEL-DOSE-v2-prod",
+  "target": "dose_ppm_min",
+  "target_units": "ppm_min",
+  "target_description": "Cumulative H2S exposure dose in ppm\u00b7min (synthetic labels)",
+  "data_source": "github_synthetic_feature_dataset.csv",
+  "lab_validated": false,
+  "production_model": true,
+  "reference_only": false,
+  "feature_names": [
+    "cal_r",
+    "cal_g",
+    "cal_b",
+    "L_star",
+    "a_star",
+    "b_star",
+    "hue",
+    "sat",
+    "val",
+    "delta_e"
+  ],
+  "feature_schema_version": "prod-image-v1",
+  "hsv_scale": "dataset uses sat/val approximately 0-100 percent; inference converts OpenCV S/V via /2.55; hue left in dataset units",
+  "target_transform": "none",
+  "group_column": "chemical_state_id",
+  "validation_method": "repository_split_by_chemical_state_id",
+  "excluded_features": {
+    "temperature_c": "not available from camera at scan time",
+    "humidity_pct": "not available from camera at scan time",
+    "strip_age_days": "not available from camera at scan time",
+    "noise_std": "CV definition not identical",
+    "uniformity_score": "excluded for stricter definition match"
+  },
+  "metrics": {
+    "validation": {
+      "mae": 25.094250535991133,
+      "rmse": 46.81669010168005,
+      "r2": 0.9925684572499545,
+      "median_ae": 12.539223166119882,
+      "pred_min": 0.0,
+      "pred_max": 1979.0416300253669
+    },
+    "test_clipped_nonnegative": {
+      "mae": 25.694149426115057,
+      "rmse": 45.79228950305127,
+      "r2": 0.9931072165279561,
+      "median_ae": 12.151187123013756,
+      "pred_min": 0.0,
+      "pred_max": 1948.7234402379934,
+      "neg_preds": 0
+    },
+    "test_raw": {
+      "mae": 25.710585702313814,
+      "rmse": 45.79299453395321,
+      "r2": 0.9931070042798763,
+      "median_ae": 12.151187123013756,
+      "pred_min": -4.444228385730385,
+      "pred_max": 1948.7234402379934,
+      "neg_preds": 6
+    }
+  },
+  "training_samples": 3441,
+  "validation_samples": 875,
+  "test_samples": 865,
+  "permutation_importance_val": {
+    "cal_r": 0.3908867610765472,
+    "delta_e": 0.16684781762073392,
+    "cal_g": 0.09942774532464928,
+    "b_star": 0.01085903166374054,
+    "L_star": 0.004749963352579545,
+    "a_star": 0.003952746369578569,
+    "sat": 0.001093623539312999,
+    "cal_b": 0.0006815937961021229,
+    "hue": 0.0005393356396836968,
+    "val": 7.646037675247686e-05
+  },
+  "disclaimer": "ALL METRICS ARE SYNTHETIC SOFTWARE-VALIDATION RESULTS. NOT LABORATORY H2S CALIBRATION."
+}

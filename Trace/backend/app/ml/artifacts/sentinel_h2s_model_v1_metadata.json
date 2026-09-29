@@ -1,0 +1,104 @@
+{
+  "model_name": "SENTINEL-H2S-v1",
+  "model_version": "SENTINEL-H2S-v1",
+  "model_type": "ExtraTreesRegressor",
+  "model_state": "TRAINED",
+  "feature_schema": [
+    "rgb_r_mean",
+    "rgb_g_mean",
+    "rgb_b_mean",
+    "rgb_r_std",
+    "rgb_g_std",
+    "rgb_b_std",
+    "hsv_h_mean",
+    "hsv_s_mean",
+    "hsv_v_mean",
+    "hsv_h_std",
+    "hsv_s_std",
+    "hsv_v_std",
+    "lab_l_mean",
+    "lab_a_mean",
+    "lab_b_mean",
+    "lab_l_std",
+    "lab_a_std",
+    "lab_b_std",
+    "norm_r",
+    "norm_g",
+    "norm_b",
+    "norm_lab_l",
+    "norm_lab_a",
+    "norm_lab_b",
+    "delta_e",
+    "ref_patch_delta_e",
+    "brightness_mean",
+    "brightness_std",
+    "blur_score",
+    "temperature_c",
+    "humidity_pct",
+    "exposure_duration_min"
+  ],
+  "feature_schema_version": "v2-strip-card",
+  "dataset_type": "synthetic_development",
+  "dataset_id": "sentinel_synthetic_dataset-v3",
+  "label_source": "literature_derived_proxy",
+  "is_lab_validated": false,
+  "trained_at": "2026-09-14T19:34:00.932986+00:00",
+  "training_samples": 64,
+  "split_counts": {
+    "train": 52,
+    "holdout": 27,
+    "test": 15,
+    "validation": 12
+  },
+  "metrics": {
+    "train_rmse": 0.9689,
+    "train_mae": 0.6211,
+    "train_r2": 0.9991,
+    "test_mae": 3.4429,
+    "test_rmse": 4.3173,
+    "test_r2": 0.9821,
+    "test_samples": 42
+  },
+  "target": "h2s_concentration_ppm",
+  "delta_e_max": 66.6411923690691,
+  "by_split": {
+    "holdout": {
+      "mae": 3.7743132716049383,
+      "rmse": 4.562890829876706,
+      "r2": 0.9801481131164779,
+      "samples": 27
+    },
+    "test": {
+      "mae": 2.8462777777777775,
+      "rmse": 3.8359225834174784,
+      "r2": 0.9855364003283366,
+      "samples": 15
+    }
+  },
+  "by_lighting": {
+    "fluorescent": {
+      "mae": 3.7743132716049383,
+      "rmse": 4.562890829876706,
+      "r2": 0.9801481131164779,
+      "samples": 27
+    },
+    "dim_indoor": {
+      "mae": 2.9240000000000013,
+      "rmse": 3.4245046985740224,
+      "r2": 0.9911425736929339,
+      "samples": 5
+    },
+    "daylight": {
+      "mae": 3.11455357142857,
+      "rmse": 4.502883369259387,
+      "r2": 0.9777983916598774,
+      "samples": 7
+    },
+    "LED": {
+      "mae": 2.090763888888888,
+      "rmse": 2.5914383635821565,
+      "r2": 0.990911281935307,
+      "samples": 3
+    }
+  }
+}
