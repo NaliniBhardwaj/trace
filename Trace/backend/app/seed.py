@@ -16,10 +16,10 @@ from app.risk_engine import evaluate_risk, DEFAULT_THRESHOLDS
 
 RNG = random.Random(42)  # fixed seed -> deterministic
 
-# Phase 1/2 refinery zones (deterministic)
-# code, name, zone_type, description, risk_level, adjacent codes, zone_marker_id
+# Phase 1/2 refinery zones (deterministic) — beacon_id added in Phase 2
+# code, name, zone_type, description, risk_level, adjacent codes, beacon_id
 ZONES = [
-    # code, name, type, desc, risk, adj, zone_marker, floor_level, floor_label, map_x, map_y
+    # code, name, type, desc, risk, adj, beacon, floor_level, floor_label, map_x, map_y
     ("Z-CTRL", "Control Room", "CONTROL", "Central monitoring and control", "NORMAL", ["Z-PROC-A", "Z-MAINT"], "BEACON-CONTROL", 0, "GROUND", 180, 40),
     ("Z-PROC-A", "Processing Unit A", "PROCESSING", "Primary hydrocarbon processing", "NORMAL", ["Z-CTRL", "Z-PROC-B", "Z-COMP"], "BEACON-UNIT-A", 0, "GROUND", 20, 40),
     ("Z-PROC-B", "Processing Unit B", "PROCESSING", "Secondary hydrocarbon processing", "NORMAL", ["Z-PROC-A", "Z-PUMP"], "BEACON-UNIT-B", 1, "LEVEL 1", 20, 40),
@@ -82,12 +82,64 @@ def _optical_response_for_ppm(target_ppm: float) -> float:
     return round((lo + hi) / 2, 4)
 
 
+def _ensure_initial_operational_assignments(db) -> int:
+    """Create ACTIVE OperationalAssignment for workers that have a seeded zone_id
+    but no ACTIVE operational assignment yet.
+
+    Permit-to-enter (Phase 7) authorizes against OperationalAssignment, not
+    Worker.zone_id (physical location). Demo seed historically only set
+    Worker.zone_id, so every QR entry request returned WORKER_NOT_ASSIGNED.
+    This backfill aligns initial operational assignment with the demo zone in
+    WORKERS_SPEC without touching physical location or permit rules.
+    """
+    created = 0
+    workers = (
+        db.query(models.Worker)
+        .filter(
+            models.Worker.status == models.WorkerStatus.ACTIVE,
+            models.Worker.zone_id.isnot(None),
+        )
+        .all()
+    )
+    for w in workers:
+        existing = (
+            db.query(models.OperationalAssignment)
+            .filter(
+                models.OperationalAssignment.worker_id == w.id,
+                models.OperationalAssignment.status == models.AssignmentStatus.ACTIVE,
+            )
+            .first()
+        )
+        if existing:
+            continue
+        db.add(
+            models.OperationalAssignment(
+                worker_id=w.id,
+                zone_id=w.zone_id,
+                status=models.AssignmentStatus.ACTIVE,
+                started_at=datetime.utcnow(),
+                notes="[seed initial operational assignment — matches demo zone]",
+            )
+        )
+        created += 1
+    if created:
+        db.commit()
+    return created
+
+
 def run():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
         if db.query(models.User).filter(models.User.email == "worker@sentinel.demo").first():
-            print("DB already seeded, skipping. Delete DB file to re-seed.")
+            # Already seeded — still ensure operational assignments exist so
+            # permit-to-enter works for demo workers (Phase 7 requires ACTIVE
+            # OperationalAssignment; physical Worker.zone_id alone is not enough).
+            n = _ensure_initial_operational_assignments(db)
+            if n:
+                print(f"DB already seeded; backfilled {n} initial operational assignment(s).")
+            else:
+                print("DB already seeded, skipping. Delete DB file to re-seed.")
             return
 
         profile = models.SiteThresholdProfile(
@@ -227,6 +279,23 @@ def run():
             db.add(w)
             db.flush()
             workers_by_code[emp_code] = w
+
+        # Phase 7 — operational assignments for permit-to-enter.
+        # Worker.zone_id is physical location only; permits require ACTIVE
+        # OperationalAssignment matching the scanned zone.
+        for emp_code, w in workers_by_code.items():
+            if w.status != models.WorkerStatus.ACTIVE or not w.zone_id:
+                continue
+            db.add(
+                models.OperationalAssignment(
+                    worker_id=w.id,
+                    zone_id=w.zone_id,
+                    status=models.AssignmentStatus.ACTIVE,
+                    started_at=datetime.utcnow(),
+                    notes="[seed initial operational assignment — matches demo zone]",
+                )
+            )
+        db.flush()
 
         # Historical scans only for ACTIVE workers with strips
         now = datetime.utcnow()

@@ -76,7 +76,7 @@ def _loc(db, worker_id, zone_id, when):
         previous_zone_id=None,
         new_zone_id=zone_id,
         beacon_id=None,
-        source=models.LocationSource.DEMO,
+        source=models.LocationSource.DEMO_BLE,
         occurred_at=when,
         sync_status=models.SyncStatus.SYNCED,
     )
@@ -96,7 +96,7 @@ def test_get_worker_zone_at_boundaries():
 
     assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=5)).id == za.id
     assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=14)).id == za.id
-    assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=15)).id == zb.id # inclusive
+    assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=15)).id == zb.id  # inclusive
     assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=20)).id == zb.id
     assert get_worker_zone_at(db, w.id, t0 + timedelta(minutes=25)).id == zc.id
     assert get_worker_zone_at(db, w.id, t0 - timedelta(minutes=1)) is None
@@ -148,7 +148,7 @@ def test_move_a_to_b_spike_not_retroactive():
         worker_id=w.id, source="SYNTHETIC", client_reading_uuid="ab-2",
     )
     _loc(db, w.id, zb.id, t0 + timedelta(minutes=15))
-    # Also update current zone (simulating physical) — engine must still use history
+    # Also update current zone (simulating BLE) — engine must still use history
     w.zone_id = zb.id
     db.commit()
     process_h2s_reading(
@@ -259,4 +259,4 @@ def test_interval_math_unchanged():
     start = datetime(2026, 1, 1, 10, 0, 0)
     end = datetime(2026, 1, 1, 10, 10, 0)
     calc = calculate_interval_exposure(5.0, 10.0, start, end)
-    assert abs(calc.exposure_dose_ppm_min - 75.0) < 0.01 # avg 7.5 * 10
+    assert abs(calc.exposure_dose_ppm_min - 75.0) < 0.01  # avg 7.5 * 10

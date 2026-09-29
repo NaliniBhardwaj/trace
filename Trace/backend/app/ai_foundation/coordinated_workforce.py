@@ -2,7 +2,7 @@
 Phase 14 — Coordinated Workforce Intelligence Engine.
 
 AI-assisted deterministic decision-support that unifies:
-  rotation optimizer · cleaning priority · evacuation · permits · physical · vertical risk
+  rotation optimizer · cleaning priority · evacuation · permits · BLE · vertical risk
 
 Architecture:
   Operational State → Feature Aggregation → Zone/Worker Intelligence → Task Demand
@@ -726,7 +726,7 @@ def coordinate_workforce(
                 "allow_reassign": True,
             })
         else:
-            pass # will surface as unresolved if needed
+            pass  # will surface as unresolved if needed
 
     # Unresolved workers from rotation plan + no alternative after evac
     unresolved_workers: List[Dict[str, Any]] = []
@@ -760,7 +760,7 @@ def coordinate_workforce(
         if t.get("status") in ("UNRESOLVED", "BLOCKED") and t["task_type"] != "EVACUATION_SUPPORT"
     ]
 
-    # physical mismatch warnings
+    # BLE mismatch warnings
     warnings: List[str] = []
     for ws in worker_states:
         if ws.get("location_mismatch"):
@@ -879,7 +879,7 @@ def validate_coordinated_plan(plan: Dict[str, Any], scenario: Dict[str, Any]) ->
         if not val["allowed"]:
             all_ok = False
             blocking.extend(entry["reasons"])
-        # physical mismatch visibility
+        # BLE mismatch visibility
         if w.get("assigned_zone_id") and w.get("physical_zone_id") and w["assigned_zone_id"] != w["physical_zone_id"]:
             entry["location_mismatch"] = "LOCATION_ASSIGNMENT_MISMATCH"
         results.append(entry)
@@ -1057,6 +1057,6 @@ def apply_coordinated_plan(
         "note": (
             "Synthetic assignments updated (assigned_zone_id). "
             "Evacuation actions noted only — evacuation workflow remains authoritative. "
-            "physical location unchanged."
+            "BLE physical location unchanged."
         ),
     }

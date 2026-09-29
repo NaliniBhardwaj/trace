@@ -22,7 +22,7 @@ from app.safety_engine import get_worker_exposure_summary
 def get_active_policy(db: Session) -> models.RotationPolicy:
     p = (
         db.query(models.RotationPolicy)
-        .filter(models.RotationPolicy.is_active == True) # noqa: E712
+        .filter(models.RotationPolicy.is_active == True)  # noqa: E712
         .order_by(models.RotationPolicy.created_at.desc())
         .first()
     )
@@ -302,7 +302,7 @@ def create_active_assignment(
     assigned_by: Optional[str],
     notes: str = "",
 ) -> models.OperationalAssignment:
-    """Create ACTIVE operational assignment. Does NOT change Worker.zone_id."""
+    """Create ACTIVE operational assignment. Does NOT change Worker.zone_id (BLE)."""
     existing = _active_assignment(db, worker_id)
     if existing:
         raise ValueError(
@@ -363,7 +363,7 @@ def confirm_rotation(
     if _in_critical_zone(replacement):
         raise ValueError("Replacement worker is currently in a CRITICAL zone")
 
-    # Operational assignment transition (NOT physical location)
+    # Operational assignment transition (NOT physical BLE location)
     end_active_assignments(db, rec.source_worker_id, notes="[ended by rotation confirm]")
     create_active_assignment(
         db,
@@ -378,7 +378,7 @@ def confirm_rotation(
     rec.confirmed_by = supervisor_user_id
     rec.confirmed_at = datetime.utcnow()
     rec.updated_at = datetime.utcnow()
-    # Intentionally do NOT set replacement.zone_id — physical owns physical location
+    # Intentionally do NOT set replacement.zone_id — BLE owns physical location
     db.commit()
     db.refresh(rec)
     return rec
@@ -509,7 +509,7 @@ def handle_zone_became_critical(db: Session, zone_id: str) -> dict:
 
     blocked = block_pending_rotations_for_zone(db, zone.id)
 
-    # Workers currently physically associated (Worker.zone_id = current physical location)
+    # Workers currently physically associated (Worker.zone_id = current BLE location)
     workers = (
         db.query(models.Worker)
         .filter(models.Worker.zone_id == zone.id)

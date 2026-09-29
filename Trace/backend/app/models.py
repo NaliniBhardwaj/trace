@@ -23,8 +23,8 @@ class RoleEnum(str, enum.Enum):
 
 
 class RiskLevel(str, enum.Enum):
-    LOW = "LOW" # legacy / scan-level
-    NORMAL = "NORMAL" # zone stored state (Phase 1)
+    LOW = "LOW"          # legacy / scan-level
+    NORMAL = "NORMAL"    # zone stored state (Phase 1)
     ELEVATED = "ELEVATED"
     HIGH = "HIGH"
     CRITICAL = "CRITICAL"
@@ -51,8 +51,8 @@ class SyncStatus(str, enum.Enum):
 
 
 class LocationSource(str, enum.Enum):
-    QR_SCAN = "QR_SCAN"
-    DEMO = "DEMO"
+    REAL_BLE = "REAL_BLE"
+    DEMO_BLE = "DEMO_BLE"
     MANUAL = "MANUAL"
     SYSTEM = "SYSTEM"
 
@@ -104,9 +104,9 @@ class AlertType(str, enum.Enum):
     # Phase 18 — panic button / dead man's switch. Alert.alert_type is a plain
     # String column (not FK'd to this enum at the DB level) so these values
     # need no migration; the enum exists purely for readable, typo-safe code.
-    PANIC_MANUAL = "PANIC_MANUAL" # worker pressed the SOS button
-    PANIC_NO_MOTION = "PANIC_NO_MOTION" # dead man's switch: no movement
-    PANIC_FALL = "PANIC_FALL" # dead man's switch: fall pattern
+    PANIC_MANUAL = "PANIC_MANUAL"          # worker pressed the SOS button
+    PANIC_NO_MOTION = "PANIC_NO_MOTION"    # dead man's switch: no movement
+    PANIC_FALL = "PANIC_FALL"              # dead man's switch: fall pattern
 
 
 class AlertStatus(str, enum.Enum):
@@ -163,21 +163,21 @@ class Zone(Base):
     __tablename__ = "zones"
 
     id = Column(String, primary_key=True, default=gen_uuid)
-    code = Column(String, unique=True, index=True, nullable=False) # e.g. 'Z-PROC-A'
+    code = Column(String, unique=True, index=True, nullable=False)  # e.g. 'Z-PROC-A'
     name = Column(String, nullable=False)
-    zone_type = Column(String, default="OPERATIONAL") # CONTROL, PROCESSING, COMPRESSOR, STORAGE, etc.
+    zone_type = Column(String, default="OPERATIONAL")  # CONTROL, PROCESSING, COMPRESSOR, STORAGE, etc.
     description = Column(Text, default="")
-    risk_level = Column(Enum(RiskLevel), default=RiskLevel.NORMAL) # stored state; Safety Engine later
+    risk_level = Column(Enum(RiskLevel), default=RiskLevel.NORMAL)  # stored state; Safety Engine later
     is_active = Column(Boolean, default=True)
-    adjacent_zone_ids = Column(JSON, default=list) # list of zone id strings
-    beacon_id = Column(String, unique=True, nullable=True, index=True) # Phase 2 zone marker identifier
+    adjacent_zone_ids = Column(JSON, default=list)  # list of zone id strings
+    beacon_id = Column(String, unique=True, nullable=True, index=True)  # Phase 2 BLE beacon identifier
     # Phase 6.1 — synthetic multi-level spatial metadata (prototype layout, not surveyed)
     floor_level = Column(Integer, nullable=False, default=0)
     floor_label = Column(String, nullable=True, default="GROUND")
     map_x = Column(Integer, nullable=True)
     map_y = Column(Integer, nullable=True)
     site_threshold_profile_id = Column(String, ForeignKey("site_threshold_profiles.id"), nullable=True)
-    is_synthetic = Column(Boolean, default=True) # marks demo/synthetic records
+    is_synthetic = Column(Boolean, default=True)  # marks demo/synthetic records
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -211,16 +211,16 @@ class Worker(Base):
 
     id = Column(String, primary_key=True, default=gen_uuid)
     user_id = Column(String, ForeignKey("users.id"), unique=True, nullable=False)
-    display_id = Column(String, unique=True, nullable=False) # employee_code e.g. 'SNT-W001'
-    employee_code = Column(String, unique=True, nullable=True, index=True) # same as display_id for Phase 1
+    display_id = Column(String, unique=True, nullable=False)  # employee_code e.g. 'SNT-W001'
+    employee_code = Column(String, unique=True, nullable=True, index=True)  # same as display_id for Phase 1
     department = Column(String, default="Operations")
-    phone = Column(String, default="") # synthetic only
+    phone = Column(String, default="")  # synthetic only
     status = Column(Enum(WorkerStatus), default=WorkerStatus.ACTIVE)
     supervisor_id = Column(String, ForeignKey("users.id"), nullable=True)
-    zone_id = Column(String, ForeignKey("zones.id"), nullable=True) # current_zone_id
-    shift_label = Column(String, default="") # e.g. "A", "Day Shift 06:00–18:00"
+    zone_id = Column(String, ForeignKey("zones.id"), nullable=True)  # current_zone_id
+    shift_label = Column(String, default="")  # e.g. "A", "Day Shift 06:00–18:00"
     active_strip_id = Column(String, ForeignKey("strips.id"), nullable=True)
-    is_synthetic = Column(Boolean, default=True) # marks demo/synthetic records
+    is_synthetic = Column(Boolean, default=True)  # marks demo/synthetic records
     # Phase 18 — H2S safety training / certification gate on permit-to-work.
     # NULL means "no training record on file" and is treated as valid/not
     # enforced (backward compatible with every worker seeded before this
@@ -268,7 +268,7 @@ class CalibrationProfile(Base):
     # Piecewise-linear curve control points stored as JSON:
     # [{"response": 0.0, "ppm": 0.0}, {"response": 1.0, "ppm": 50.0}, ...]
     curve_points = Column(JSON, nullable=False)
-    is_validated = Column(Boolean, default=False) # False => DEMO/SIMULATED
+    is_validated = Column(Boolean, default=False)  # False => DEMO/SIMULATED
     notes = Column(Text, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -277,7 +277,7 @@ class Strip(Base):
     __tablename__ = "strips"
 
     id = Column(String, primary_key=True, default=gen_uuid)
-    strip_code = Column(String, unique=True, index=True, nullable=False) # QR "strip_id"
+    strip_code = Column(String, unique=True, index=True, nullable=False)  # QR "strip_id"
     batch_id = Column(String, ForeignKey("strip_batches.id"), nullable=False)
     activated_at = Column(DateTime, nullable=True)
     expires_at = Column(DateTime, nullable=True)
@@ -291,7 +291,7 @@ class Scan(Base):
     __tablename__ = "scans"
 
     id = Column(String, primary_key=True, default=gen_uuid)
-    client_scan_uuid = Column(String, unique=True, index=True, nullable=False) # idempotency key from device
+    client_scan_uuid = Column(String, unique=True, index=True, nullable=False)  # idempotency key from device
     worker_id = Column(String, ForeignKey("workers.id"), nullable=False)
     strip_id = Column(String, ForeignKey("strips.id"), nullable=True)
     zone_id = Column(String, ForeignKey("zones.id"), nullable=True)
@@ -300,10 +300,10 @@ class Scan(Base):
     captured_at = Column(DateTime, nullable=False)
     duration_seconds = Column(Integer, nullable=False, default=0)
 
-    optical_response = Column(Float, nullable=True) # raw normalized CV output, NEVER called ppm
-    estimated_ppm = Column(Float, nullable=True) # derived via calibration curve
-    dose_ppm_min = Column(Float, nullable=True) # estimated_ppm * duration_minutes
-    confidence = Column(Float, nullable=True) # 0..1
+    optical_response = Column(Float, nullable=True)   # raw normalized CV output, NEVER called ppm
+    estimated_ppm = Column(Float, nullable=True)       # derived via calibration curve
+    dose_ppm_min = Column(Float, nullable=True)         # estimated_ppm * duration_minutes
+    confidence = Column(Float, nullable=True)           # 0..1
     quality_ok = Column(Boolean, default=True)
 
     temperature_c = Column(Float, nullable=True)
@@ -340,10 +340,10 @@ class ExposureEvent(Base):
     average_h2s_ppm = Column(Float, nullable=True)
     peak_h2s_ppm = Column(Float, nullable=True)
     exposure_dose_ppm_min = Column(Float, nullable=True)
-    source = Column(String, nullable=True) # SYNTHETIC | STRIP_ML | SENSOR | SCAN
+    source = Column(String, nullable=True)  # SYNTHETIC | STRIP_ML | SENSOR | SCAN
     is_synthetic = Column(Boolean, default=False)
     occurred_at = Column(DateTime, default=datetime.utcnow, index=True)
-    dose_ppm_min = Column(Float, default=0.0) # legacy alias / this-interval dose
+    dose_ppm_min = Column(Float, default=0.0)  # legacy alias / this-interval dose
     cumulative_dose_ppm_min = Column(Float, default=0.0)
     risk_level = Column(Enum(RiskLevel), nullable=True)
 
@@ -359,7 +359,7 @@ class H2SReading(Base):
     h2s_ppm = Column(Float, nullable=False)
     source = Column(Enum(H2SSource), nullable=False, default=H2SSource.SYNTHETIC)
     is_synthetic = Column(Boolean, default=True)
-    client_reading_uuid = Column(String, unique=True, nullable=True, index=True) # idempotency
+    client_reading_uuid = Column(String, unique=True, nullable=True, index=True)  # idempotency
     occurred_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -371,7 +371,7 @@ class Alert(Base):
     __tablename__ = "alerts"
 
     id = Column(String, primary_key=True, default=gen_uuid)
-    type = Column(Enum(RiskLevel), nullable=False) # severity legacy
+    type = Column(Enum(RiskLevel), nullable=False)  # severity legacy
     alert_type = Column(String, nullable=True, default="GENERAL", index=True)
     severity = Column(String, nullable=True, default="HIGH")
     status = Column(String, nullable=True, default="OPEN", index=True)
@@ -398,14 +398,14 @@ class Report(Base):
     generated_by = Column(String, ForeignKey("users.id"), nullable=True)
     period_start = Column(DateTime, nullable=True)
     period_end = Column(DateTime, nullable=True)
-    payload = Column(JSON, default=dict) # bullets/recommendations/kpis snapshot
+    payload = Column(JSON, default=dict)  # bullets/recommendations/kpis snapshot
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
 class WorkerLocationEvent(Base):
     """Meaningful zone-change or heartbeat location event for a worker.
     Created when stable zone changes (or optional periodic heartbeat).
-    Not one row per physical scan."""
+    Not one row per BLE scan."""
     __tablename__ = "worker_location_events"
 
     id = Column(String, primary_key=True, default=gen_uuid)
@@ -414,9 +414,9 @@ class WorkerLocationEvent(Base):
     new_zone_id = Column(String, ForeignKey("zones.id"), nullable=True)
     beacon_id = Column(String, nullable=True)
     rssi = Column(Integer, nullable=True)
-    confidence = Column(Float, nullable=True) # 0..1 engineering estimate
-    source = Column(Enum(LocationSource), nullable=False, default=LocationSource.QR_SCAN)
-    signal_strength = Column(String, nullable=True) # VERY_STRONG / STRONG / MEDIUM / WEAK / UNKNOWN
+    confidence = Column(Float, nullable=True)  # 0..1 engineering estimate
+    source = Column(Enum(LocationSource), nullable=False, default=LocationSource.REAL_BLE)
+    signal_strength = Column(String, nullable=True)  # VERY_STRONG / STRONG / MEDIUM / WEAK / UNKNOWN
     sync_status = Column(Enum(SyncStatus), default=SyncStatus.SYNCED)
     occurred_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -478,7 +478,7 @@ class EvacuationEvent(Base):
     worker_id = Column(String, ForeignKey("workers.id"), nullable=True, index=True)
     zone_id = Column(String, ForeignKey("zones.id"), nullable=False, index=True)
     risk_level = Column(String, nullable=False, default="CRITICAL")
-    trigger = Column(String, default="ZONE_CRITICAL") # ZONE_CRITICAL | MANUAL | SYSTEM
+    trigger = Column(String, default="ZONE_CRITICAL")  # ZONE_CRITICAL | MANUAL | SYSTEM
     status = Column(Enum(EvacuationStatus), default=EvacuationStatus.OPEN, index=True)
     acknowledged_by = Column(String, ForeignKey("users.id"), nullable=True)
     acknowledged_at = Column(DateTime, nullable=True)
@@ -492,7 +492,7 @@ class EvacuationEvent(Base):
 
 class OperationalAssignment(Base):
     """Operational task/zone assignment (supervisor-driven).
-    Distinct from physical location (Worker.zone_id / WorkerLocationEvent).
+    Distinct from physical BLE location (Worker.zone_id / WorkerLocationEvent).
     Confirming a rotation changes assignment only — never physical location.
     """
     __tablename__ = "operational_assignments"
@@ -545,7 +545,7 @@ class PermitToEnter(Base):
     issued_by = Column(String, ForeignKey("users.id"), nullable=True)
     status = Column(Enum(PermitStatus), default=PermitStatus.REQUESTED, index=True)
     purpose = Column(String, default="ENTRY")
-    decision_reason = Column(String, default="") # structured code
+    decision_reason = Column(String, default="")  # structured code
     requested_at = Column(DateTime, default=datetime.utcnow)
     approved_at = Column(DateTime, nullable=True)
     expires_at = Column(DateTime, nullable=True)
@@ -565,7 +565,7 @@ class PermitToEnter(Base):
 class SafetyReassignmentRecommendation(Base):
     """Safe alternative zone recommendation after CRITICAL/evacuation.
     Supervisor must confirm. Never auto-assigns to CRITICAL zones.
-    Does not change Worker.zone_id.
+    Does not change Worker.zone_id (BLE).
     """
     __tablename__ = "safety_reassignment_recommendations"
 
@@ -601,7 +601,7 @@ class ShiftHandover(Base):
     id = Column(String, primary_key=True, default=gen_uuid)
     zone_id = Column(String, ForeignKey("zones.id"), nullable=False, index=True)
     from_user_id = Column(String, ForeignKey("users.id"), nullable=False)
-    to_user_id = Column(String, ForeignKey("users.id"), nullable=True) # optional explicit addressee
+    to_user_id = Column(String, ForeignKey("users.id"), nullable=True)  # optional explicit addressee
     notes = Column(Text, default="")
     status_snapshot = Column(JSON, default=dict)
     acknowledged = Column(Boolean, default=False)

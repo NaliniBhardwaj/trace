@@ -126,7 +126,7 @@ def ensure_remediation(
 
 
 def workers_physically_in_zone(db: Session, zone_id: str) -> List[models.Worker]:
-    """Current physical presence via Worker.zone_id. Not historical."""
+    """Current physical presence via Worker.zone_id (BLE). Not historical."""
     return (
         db.query(models.Worker)
         .filter(models.Worker.zone_id == zone_id)
@@ -164,7 +164,7 @@ def generate_critical_locality_alerts(
 ) -> dict:
     """
     Phase 9 — Critical H₂S locality alerts.
-    Targets workers by physical location (Worker.zone_id), not assignment.
+    Targets workers by BLE physical location (Worker.zone_id), not assignment.
     Deduplicates per zone+recipient while alert is OPEN/ACKNOWLEDGED.
     Prototype notification only — does not replace site emergency procedures.
     """
@@ -298,7 +298,7 @@ def generate_critical_locality_alerts(
             title="CRITICAL H₂S — LOCALITY",
             body=(
                 f"Zone {zone.code} ({zone.name}) is CRITICAL. "
-                f"Workers physically inside: {len(inside)}. "
+                f"Workers physically inside (BLE): {len(inside)}. "
                 f"Nearby (adjacent): {len(nearby_unique)}. "
                 "Existing evacuation/remediation workflows apply. (DEMO.)"
             ),
@@ -334,7 +334,7 @@ def generate_critical_locality_alerts(
             title="CRITICAL H₂S — SUPERVISOR",
             body=(
                 f"Supervisory notice: Zone {zone.code} is CRITICAL. "
-                f"occupants: {len(inside)}. (DEMO/prototype.)"
+                f"BLE occupants: {len(inside)}. (DEMO/prototype.)"
             ),
         )
         db.add(a)
@@ -371,7 +371,7 @@ def handle_critical_alerts_and_remediation(
             db, zone_id=zone_id, worker_id=w.id, reading_id=reading_id
         )
         worker_alerts += 1
-    # Phase 9 — locality alerts (physical + adjacent)
+    # Phase 9 — locality alerts (BLE physical + adjacent)
     locality = generate_critical_locality_alerts(db, zone_id=zone_id, reading_id=reading_id)
     # Flush only — parent transaction (process_h2s_reading / API) owns the commit
     db.flush()

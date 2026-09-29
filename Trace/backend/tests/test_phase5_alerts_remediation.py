@@ -55,7 +55,7 @@ def setup_db():
     db.flush()
     for w, z in [(wa, za), (wb, zb)]:
         db.add(models.WorkerLocationEvent(
-            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO,
+            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO_BLE,
             occurred_at=datetime.utcnow() - timedelta(hours=1),
             sync_status=models.SyncStatus.SYNCED,
         ))

@@ -30,7 +30,7 @@ Set `EXPO_PUBLIC_API_URL=http://<LAN-IP>:8000` on physical device if auto-detect
 | Role separation | | Real device | |
 | Logout | | Real device | |
 | Worker Home data | | API/device | |
-| Zone QR access | | Device | Mark NOT TESTED if no QR |
+| Real BLE | | Hardware | Mark NOT TESTED if no beacon |
 | Demo Mode | | Device | Settings → Demonstration |
 | Critical Zone Event | | Device/API | Primary SIH scenario |
 | Real Mode restore | | Device | Switch back from Demo |
@@ -49,18 +49,18 @@ Set `EXPO_PUBLIC_API_URL=http://<LAN-IP>:8000` on physical device if auto-detect
 | Offline + sync | | Device | |
 | i18n en/hi | | Device | |
 | Theme | | Device | |
-| ModeBanner transparency | | Device | Never "LIVE" hardware labels in Demo |
+| ModeBanner transparency | | Device | Never "LIVE BLE" in Demo |
 
 Allowed results: PASS | PARTIAL | NOT TESTED | BLOCKED
 
 ## Demo vs Real rules
 
-- Demo/synthetic source must never display as live hardware
+- DemoBLE source must never display as LIVE BLE
 - Synthetic H₂S must not display as live sensor
 - Permit grant/deny must come from `/permits/request`
 - No UI-hardcoded CRITICAL / ppm values
 
 ## Engines (must remain untouched)
 
-Backend, DB, AI, ML, CV, exposure, risk, permit, alert,
+Backend, DB, AI, ML, CV, BLE, exposure, risk, permit, alert,
 evacuation, rotation, remediation — no code changes for this phase.

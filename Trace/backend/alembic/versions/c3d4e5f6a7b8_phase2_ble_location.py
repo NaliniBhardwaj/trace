@@ -1,4 +1,4 @@
-"""phase2 location: zone.beacon_id + worker_location_events
+"""phase2 ble location: zone.beacon_id + worker_location_events
 
 Revision ID: c3d4e5f6a7b8
 Revises: b1c2d3e4f5a6

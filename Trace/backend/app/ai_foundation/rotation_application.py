@@ -4,7 +4,7 @@ Phase 13.1 — Closed-loop rotation application on synthetic plans.
 Connects approved AI rotation recommendations to authoritative validation
 and a safe, atomic apply path for *synthetic* scenario state.
 
-Does NOT mutate live DB Worker.zone_id (physical owns physical location).
+Does NOT mutate live DB Worker.zone_id (BLE owns physical location).
 For live DB, existing coordination_engine.confirm_safe_reassignment /
 rotation_engine.create_active_assignment remain authoritative.
 
@@ -32,8 +32,8 @@ ALLOWED_TRANSITIONS = {
     "VALIDATED": {"APPLIED", "BLOCKED", "STALE", "REJECTED"},
     "APPLIED": set(),
     "REJECTED": set(),
-    "BLOCKED": set(), # terminal until new optimization
-    "STALE": set(), # terminal until new optimization
+    "BLOCKED": set(),  # terminal until new optimization
+    "STALE": set(),    # terminal until new optimization
 }
 
 # Snapshot keys used for stale detection
@@ -364,7 +364,7 @@ def revalidate_plan(
         if valid and cur == "APPROVED" and can_transition(cur, "VALIDATED"):
             transition_status(plan, "VALIDATED")
         elif valid and cur == "VALIDATED":
-            pass # remains VALIDATED
+            pass  # remains VALIDATED
         record_audit(
             plan_id=plan.get("plan_id") or "",
             action="REVALIDATE",
@@ -566,7 +566,7 @@ def apply_plan(
         from_zid = item["from_zone"]
         to_zid = item["to_zone"]
         w["assigned_zone_id"] = to_zid
-        # Do NOT change physical_zone_id (physical owns physical location)
+        # Do NOT change physical_zone_id (BLE owns physical location)
         if from_zid and from_zid in zones_by_id:
             zones_by_id[from_zid]["current_occupancy"] = max(
                 0, int(zones_by_id[from_zid].get("current_occupancy") or 0) - 1
@@ -620,7 +620,7 @@ def apply_plan(
         ],
         "note": (
             "Synthetic assignments updated (assigned_zone_id only). "
-            "Physical location unchanged. "
+            "Physical BLE location unchanged. "
             "Evacuation actions deferred to existing evacuation workflow. "
             "Prototype — not certified safety application."
         ),

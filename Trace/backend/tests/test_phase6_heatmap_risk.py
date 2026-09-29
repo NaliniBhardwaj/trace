@@ -32,7 +32,7 @@ def setup_db():
     db.flush()
     zones_spec = [
         ("Z-CTRL", "NORMAL"),
-        ("Z-PROC-A", "ELEVATED"), # will be set by synthetic
+        ("Z-PROC-A", "ELEVATED"),  # will be set by synthetic
         ("Z-COMP", "HIGH"),
         ("Z-TANK", "CRITICAL"),
     ]
@@ -59,7 +59,7 @@ def setup_db():
     db.add(w)
     db.flush()
     db.add(models.WorkerLocationEvent(
-        worker_id=w.id, new_zone_id=tank.id, source=models.LocationSource.DEMO,
+        worker_id=w.id, new_zone_id=tank.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow() - timedelta(hours=1),
         sync_status=models.SyncStatus.SYNCED,
     ))
@@ -78,9 +78,9 @@ def setup_db():
 def test_synthetic_produces_multi_level_risks():
     db = SessionLocal()
     for code, expected_min_rank in [
-        ("Z-CTRL", 0), # NORMAL
-        ("Z-COMP", 2), # HIGH from PERSISTENT_HIGH
-        ("Z-TANK", 3), # CRITICAL from CRITICAL_EVENT
+        ("Z-CTRL", 0),   # NORMAL
+        ("Z-COMP", 2),   # HIGH from PERSISTENT_HIGH
+        ("Z-TANK", 3),   # CRITICAL from CRITICAL_EVENT
     ]:
         z = db.query(models.Zone).filter(models.Zone.code == code).first()
         run_synthetic_for_zone(db, z, seed=42)

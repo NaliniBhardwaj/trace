@@ -108,7 +108,7 @@ def create_permit_request(
     zone = resolve_zone(db, zone_ref)
     if not zone:
         raise HTTPException(status_code=404, detail="Zone not found")
-    # CRITICAL: do not mutate Worker.zone_id (physical owns physical location)
+    # CRITICAL: do not mutate Worker.zone_id (BLE owns physical location)
     physical_before = worker.zone_id
     permit = request_permit(
         db,

@@ -91,7 +91,7 @@ def test_assigned_worker_approved():
     p = request_permit(db, worker=wa, zone=za, qr_payload=zone_qr_payload(za.code))
     assert p.status == models.PermitStatus.ACTIVE
     db.refresh(wa)
-    assert wa.zone_id == physical # physical location unchanged
+    assert wa.zone_id == physical  # BLE location unchanged
     db.close()
 
 

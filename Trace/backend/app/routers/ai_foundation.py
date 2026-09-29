@@ -471,7 +471,7 @@ def api_rotation_apply(
     """
     Atomically apply a VALIDATED plan via existing apply_plan().
     APPROVED alone is rejected. Final revalidation runs before apply.
-    Does not mutate physical location.
+    Does not mutate BLE physical location.
     """
     entry = _rotation_plans.get(plan_id)
     if not entry:

@@ -4,7 +4,7 @@ Phase 8 — Coordinated safety response (orchestration only).
 Connects: CRITICAL → evacuation → permit suspend → block rotation into zone
 → safe alternative recommendation → supervisor confirm → new assignment.
 
-Does NOT auto-move workers. Does NOT set Worker.zone_id.
+Does NOT auto-move workers. Does NOT set Worker.zone_id (BLE).
 Does NOT issue permits automatically for the destination.
 """
 from __future__ import annotations
@@ -146,7 +146,7 @@ def confirm_safe_reassignment(
         return rec
 
     # End ALL active assignments for worker; create destination assignment.
-    # Do NOT set Worker.zone_id.
+    # Do NOT set Worker.zone_id (BLE).
     end_active_assignments(db, rec.worker_id, notes="[ended by safe reassignment]")
     db.flush()
     # Clear any residual ACTIVE rows (idempotent safety)
@@ -168,7 +168,7 @@ def confirm_safe_reassignment(
         zone_id=dest.id,
         rotation_id=None,
         assigned_by=supervisor_user_id,
-        notes="[safe reassignment after CRITICAL — physical location unchanged]",
+        notes="[safe reassignment after CRITICAL — BLE location unchanged]",
     )
     # Old permits stay with old zone (already suspended). New permit must be requested separately.
     rec.status = models.ReassignmentStatus.CONFIRMED

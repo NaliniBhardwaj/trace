@@ -69,7 +69,7 @@ def setup_db():
     # location events
     for w, z in [(w_a, z_a), (w_b, z_n), (w_c, z_n)]:
         db.add(models.WorkerLocationEvent(
-            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO,
+            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO_BLE,
             occurred_at=datetime.utcnow() - timedelta(hours=2),
             sync_status=models.SyncStatus.SYNCED,
         ))
@@ -141,7 +141,7 @@ def test_critical_blocks_replacement():
     wa.zone_id = zc.id
     db.commit()
     db.add(models.WorkerLocationEvent(
-        worker_id=wa.id, new_zone_id=zc.id, source=models.LocationSource.DEMO,
+        worker_id=wa.id, new_zone_id=zc.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow() - timedelta(minutes=5),
         sync_status=models.SyncStatus.SYNCED,
     ))
@@ -169,7 +169,7 @@ def test_eligible_replacement_prefers_lower_exposure():
     wa.zone_id = za.id
     db.commit()
     db.add(models.WorkerLocationEvent(
-        worker_id=wa.id, new_zone_id=za.id, source=models.LocationSource.DEMO,
+        worker_id=wa.id, new_zone_id=za.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow() - timedelta(minutes=1),
         sync_status=models.SyncStatus.SYNCED,
     ))
@@ -188,7 +188,7 @@ def test_eligible_replacement_prefers_lower_exposure():
                         worker_id=wa.id, source="SYNTHETIC", client_reading_uuid="a-exp-2")
     replacement = find_eligible_replacement(db, wa, za, policy)
     assert replacement is not None
-    assert replacement.id == wb.id # B has lower exposure, same or any dept
+    assert replacement.id == wb.id  # B has lower exposure, same or any dept
     db.close()
 
 

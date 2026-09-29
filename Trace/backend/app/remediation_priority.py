@@ -18,7 +18,7 @@ RISK_RANK = {"CRITICAL": 0, "HIGH": 1, "ELEVATED": 2, "NORMAL": 3, "LOW": 3}
 
 
 def get_affected_worker_ids(db: Session, zone_id: str) -> Set[str]:
-    """Unique workers affected: assignment, physical presence, or active/suspended permit."""
+    """Unique workers affected: assignment, BLE presence, or active/suspended permit."""
     ids: Set[str] = set()
     for row in (
         db.query(models.OperationalAssignment.worker_id)
@@ -132,7 +132,7 @@ def build_priority_queue(db: Session) -> List[RemediationPriorityItem]:
     """Deterministic remediation priority list from live DB state."""
     now = datetime.utcnow()
     items: List[RemediationPriorityItem] = []
-    zones = db.query(models.Zone).filter(models.Zone.is_active == True).all() # noqa: E712
+    zones = db.query(models.Zone).filter(models.Zone.is_active == True).all()  # noqa: E712
     for z in zones:
         risk = z.risk_level.value if z.risk_level else "NORMAL"
         rem = (

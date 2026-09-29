@@ -62,7 +62,7 @@ def setup_db():
     db.add(w)
     db.flush()
     db.add(models.WorkerLocationEvent(
-        worker_id=w.id, new_zone_id=z_crit.id, source=models.LocationSource.DEMO,
+        worker_id=w.id, new_zone_id=z_crit.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow(), sync_status=models.SyncStatus.SYNCED,
     ))
     db.add(models.OperationalAssignment(
@@ -129,7 +129,7 @@ def test_critical_creates_reassignment_recommendation():
     dest = db.query(models.Zone).filter(models.Zone.id == recs[0].destination_zone_id).first()
     assert dest.risk_level.value != "CRITICAL"
     db.refresh(w)
-    assert w.zone_id == physical_before # physical unchanged
+    assert w.zone_id == physical_before  # BLE unchanged
     db.close()
 
 
@@ -159,7 +159,7 @@ def test_confirm_reassignment_changes_assignment_not_ble():
     out = confirm_safe_reassignment(db, rec.id, us.id)
     assert out.status == models.ReassignmentStatus.CONFIRMED
     db.refresh(w)
-    assert w.zone_id == physical_before # still physical
+    assert w.zone_id == physical_before  # still BLE
     active = (
         db.query(models.OperationalAssignment)
         .filter(

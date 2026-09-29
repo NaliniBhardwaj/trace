@@ -1,4 +1,4 @@
-"""Phase 2 physical location API tests."""
+"""Phase 2 BLE location API tests."""
 import os
 import sys
 from datetime import datetime
@@ -115,14 +115,14 @@ def test_beacon_zone_mapping_via_location_update(client):
             "rssi": -55,
             "confidence": 0.86,
             "signal_strength": "STRONG",
-            "source": "DEMO",
+            "source": "DEMO_BLE",
         },
     )
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["new_zone_id"] == zone_b.id
     assert body["beacon_id"] == "BEACON-UNIT-B"
-    assert body["source"] == "DEMO"
+    assert body["source"] == "DEMO_BLE"
 
     # Worker.zone_id updated
     db = SessionLocal()
@@ -145,7 +145,7 @@ def test_unknown_beacon_rejected_when_mismatched(client):
             "zone_id": zone_a.id,
             "beacon_id": "BEACON-WRONG",
             "rssi": -50,
-            "source": "QR_SCAN",
+            "source": "REAL_BLE",
         },
     )
     assert r.status_code == 400
@@ -160,7 +160,7 @@ def test_invalid_zone(client):
     r = client.post(
         f"/workers/{worker.id}/location",
         headers={"Authorization": f"Bearer {token}"},
-        json={"zone_id": "nonexistent-zone", "source": "QR_SCAN"},
+        json={"zone_id": "nonexistent-zone", "source": "REAL_BLE"},
     )
     assert r.status_code == 400
 
@@ -178,7 +178,7 @@ def test_location_history(client):
         r = client.post(
             f"/workers/{worker.id}/location",
             headers={"Authorization": f"Bearer {token}"},
-            json={"zone_id": z.id, "beacon_id": b, "rssi": -60, "source": "DEMO", "confidence": 0.7},
+            json={"zone_id": z.id, "beacon_id": b, "rssi": -60, "source": "DEMO_BLE", "confidence": 0.7},
         )
         assert r.status_code == 200, r.text
 
@@ -209,7 +209,7 @@ def test_get_current_location(client):
 def test_unauthenticated_rejected(client):
     r = client.post(
         "/workers/x/location",
-        json={"zone_id": "Z-PROC-A", "source": "QR_SCAN"},
+        json={"zone_id": "Z-PROC-A", "source": "REAL_BLE"},
     )
     assert r.status_code in (401, 403)
 
@@ -234,7 +234,7 @@ def test_no_change_does_not_invent_history(client):
             "zone_id": zone.id,
             "beacon_id": zone.beacon_id,
             "rssi": -55,
-            "source": "DEMO",
+            "source": "DEMO_BLE",
             "confidence": 0.8,
         },
     )

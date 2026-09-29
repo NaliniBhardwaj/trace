@@ -198,7 +198,7 @@ class WorkerSupervisorSummary(BaseModel):
 
 class WorkerResponse(BaseModel):
     id: str
-    worker_id: str # same as id for clarity
+    worker_id: str  # same as id for clarity
     display_id: str
     employee_code: Optional[str] = None
     name: str
@@ -309,14 +309,14 @@ class ReportResponse(BaseModel):
     class Config:
         from_attributes = True
 
-# ---------- Location (Phase 2 physical) ----------
+# ---------- Location (Phase 2 BLE) ----------
 class LocationUpdateRequest(BaseModel):
     zone_id: str
     beacon_id: Optional[str] = None
     rssi: Optional[int] = None
     confidence: Optional[float] = None
     signal_strength: Optional[str] = None
-    source: str = "QR_SCAN" # QR_SCAN | DEMO | MANUAL | SYSTEM
+    source: str = "REAL_BLE"  # REAL_BLE | DEMO_BLE | MANUAL | SYSTEM
     timestamp: Optional[datetime] = None
 
 
@@ -348,7 +348,7 @@ class WorkerLocationResponse(BaseModel):
     confidence: Optional[float] = None
     source: Optional[str] = None
     last_seen_at: Optional[datetime] = None
-    freshness: str = "UNKNOWN" # CURRENT | STALE | UNKNOWN
+    freshness: str = "UNKNOWN"  # CURRENT | STALE | UNKNOWN
 
 
 
@@ -358,7 +358,7 @@ class H2SReadingCreate(BaseModel):
     worker_id: Optional[str] = None
     h2s_ppm: float
     timestamp: Optional[datetime] = None
-    source: str = "SYNTHETIC" # SYNTHETIC | STRIP_ML | SENSOR
+    source: str = "SYNTHETIC"  # SYNTHETIC | STRIP_ML | SENSOR
     client_reading_uuid: Optional[str] = None
     is_synthetic: Optional[bool] = None
 
@@ -571,7 +571,7 @@ class PermitResponse(BaseModel):
 
 # ---------- Phase 18: SOS / panic button ----------
 class SOSTriggerRequest(BaseModel):
-    trigger_type: str = "MANUAL" # MANUAL | NO_MOTION | FALL_DETECTED
+    trigger_type: str = "MANUAL"  # MANUAL | NO_MOTION | FALL_DETECTED
     message: Optional[str] = None
 
 
@@ -598,7 +598,7 @@ class WorkerTrainingResponse(BaseModel):
     worker_id: str
     training_cert_name: Optional[str] = None
     training_cert_expires_at: Optional[datetime] = None
-    training_cert_valid: bool = True # True when no date on file (not yet tracked)
+    training_cert_valid: bool = True  # True when no date on file (not yet tracked)
 
 
 # ---------- Phase 18: shift handover ----------

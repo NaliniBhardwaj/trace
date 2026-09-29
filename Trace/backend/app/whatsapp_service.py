@@ -2,7 +2,7 @@
 Phase 10 — WhatsApp worker support (communication channel only).
 
 WhatsApp is NOT the primary emergency safety mechanism.
-Does not create evacuations, alter permits, assignments, or physical location.
+Does not create evacuations, alter permits, assignments, or BLE location.
 """
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def _rate_ok(key: str) -> bool:
 
 @dataclass
 class WaIdentity:
-    status: str # OK | NOT_FOUND | AMBIGUOUS
+    status: str  # OK | NOT_FOUND | AMBIGUOUS
     worker: Optional[models.Worker] = None
     message: str = ""
 

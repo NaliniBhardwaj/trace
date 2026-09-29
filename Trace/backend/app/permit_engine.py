@@ -3,7 +3,7 @@ SENTINEL Permit-to-Enter (Phase 7).
 
 QR identifies the zone entry point only — not authorization.
 Authorization is evaluated server-side against assignment, zone state, and risk.
-physical remains the sole source of physical location (Worker.zone_id unchanged by QR).
+BLE remains the sole source of physical location (Worker.zone_id unchanged by QR).
 """
 from __future__ import annotations
 
@@ -170,7 +170,7 @@ def evaluate_entry(
     if _zone_has_active_remediation(db, zone.id):
         return PermitDecision(False, DENIAL["ZONE_REMEDIATION"], zone=zone, worker=worker)
 
-    # Operational assignment required (not physical location)
+    # Operational assignment required (not physical BLE location)
     asg = _active_assignment_for_zone(db, worker.id, zone.id)
     if not asg:
         return PermitDecision(False, DENIAL["WORKER_NOT_ASSIGNED"], zone=zone, worker=worker)
@@ -266,7 +266,7 @@ def complete_permit(db: Session, permit: models.PermitToEnter) -> models.PermitT
 @dataclass
 class PermitSafetyState:
     valid: bool
-    safety_state: str # SAFE_TO_CONTINUE | SAFETY_SUSPENDED | EXPIRED | REVOKED | COMPLETED | DENIED | AUTHORIZED_NOT_PRESENT | PRESENT | STALE_LOCATION
+    safety_state: str  # SAFE_TO_CONTINUE | SAFETY_SUSPENDED | EXPIRED | REVOKED | COMPLETED | DENIED | AUTHORIZED_NOT_PRESENT | PRESENT | STALE_LOCATION
     reason: str
     zone_risk: Optional[str] = None
     physical_zone_id: Optional[str] = None

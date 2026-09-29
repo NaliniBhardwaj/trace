@@ -1,8 +1,8 @@
 /**
  * OperatingModeContext — Real vs Demonstration mode for SIH judging.
  *
- * REAL: existing camera/QR/API pipelines only.
- * DEMO: controlled scenario labels + existing synthetic pathways.
+ * REAL: existing BLE/camera/API pipelines only.
+ * DEMO: controlled scenario labels + existing synthetic/DemoBLE pathways.
  * Never labels synthetic inputs as live hardware.
  */
 import React, {
@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type OperatingMode = 'real' | 'demo';
 
-/** Judge-facing scenarios mapped onto existing synthetic capabilities. */
+/** Judge-facing scenarios mapped onto existing synthetic / DemoBLE capabilities. */
 export type DemoScenarioId =
   | 'NORMAL_OPERATIONS'
   | 'ELEVATED_EXPOSURE'
@@ -32,6 +32,8 @@ export interface DemoScenarioDef {
   description: string;
   /** Existing AI foundation scenario_type when applicable */
   aiScenarioType?: string;
+  /** Beacon id for DemoBLE walk target (existing DEMO_SEQUENCE / map) */
+  focusBeacon?: string;
   focusZoneHint?: string;
 }
 
@@ -41,6 +43,7 @@ export const DEMO_SCENARIOS: DemoScenarioDef[] = [
     title: 'Normal Operations',
     description: 'Plant operating with normal/low risk presentation using existing synthetic state.',
     aiScenarioType: 'NORMAL_OPERATION',
+    focusBeacon: 'BEACON-CONTROL',
     focusZoneHint: 'Control Room',
   },
   {
@@ -48,6 +51,7 @@ export const DEMO_SCENARIOS: DemoScenarioDef[] = [
     title: 'Elevated Exposure',
     description: 'Elevated zone risk and worker exposure awareness via existing data pathways.',
     aiScenarioType: 'HIGH_RISK_ZONE',
+    focusBeacon: 'BEACON-UNIT-A',
     focusZoneHint: 'Processing Unit A',
   },
   {
@@ -56,6 +60,7 @@ export const DEMO_SCENARIOS: DemoScenarioDef[] = [
     description:
       'Primary judging scenario: critical zone → alerts → evacuation → rotation → remediation (existing engines).',
     aiScenarioType: 'COMBINED_CRITICAL_EVENT',
+    focusBeacon: 'BEACON-RESTRICTED',
     focusZoneHint: 'Restricted Area',
   },
   {
@@ -63,6 +68,7 @@ export const DEMO_SCENARIOS: DemoScenarioDef[] = [
     title: 'Zone Access / Permit',
     description: 'Worker scans zone QR; existing permit API returns grant or deny with real reason.',
     aiScenarioType: 'NORMAL_OPERATION',
+    focusBeacon: 'BEACON-UNIT-B',
     focusZoneHint: 'Processing Unit B',
   },
   {
@@ -70,6 +76,7 @@ export const DEMO_SCENARIOS: DemoScenarioDef[] = [
     title: 'Strip Analysis',
     description: 'Strip QR → validation → camera → existing CV/ML → exposure/risk result.',
     aiScenarioType: 'NORMAL_OPERATION',
+    focusBeacon: 'BEACON-PUMP',
     focusZoneHint: 'Pump House',
   },
 ];

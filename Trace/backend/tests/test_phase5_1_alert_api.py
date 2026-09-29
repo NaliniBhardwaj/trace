@@ -52,7 +52,7 @@ def setup_db():
     db.add(w)
     db.flush()
     db.add(models.WorkerLocationEvent(
-        worker_id=w.id, new_zone_id=za.id, source=models.LocationSource.DEMO,
+        worker_id=w.id, new_zone_id=za.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow() - timedelta(hours=1),
         sync_status=models.SyncStatus.SYNCED,
     ))

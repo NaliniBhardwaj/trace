@@ -1,4 +1,4 @@
-"""Phase 9 / 9.1 — critical H₂S locality alerts (physical targeting)."""
+"""Phase 9 / 9.1 — critical H₂S locality alerts (BLE physical targeting)."""
 import os
 import sys
 from datetime import datetime
@@ -307,7 +307,7 @@ def test_admin_sees_zone_locality_alert_via_api():
         )
         .first()
     )
-    assert zone_alert is not None # zone-level alert exists for admin feed
+    assert zone_alert is not None  # zone-level alert exists for admin feed
     db.close()
 
 

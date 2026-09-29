@@ -14,7 +14,13 @@
     "android": {
       "package": "com.sentinel.h2sdosimeter",
       "permissions": [
-        "CAMERA"
+        "CAMERA",
+        "BLUETOOTH",
+        "BLUETOOTH_ADMIN",
+        "BLUETOOTH_SCAN",
+        "BLUETOOTH_CONNECT",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ],
       "adaptiveIcon": {
         "backgroundColor": "#0E1512"
@@ -24,6 +30,9 @@
       "bundleIdentifier": "com.sentinel.h2sdosimeter",
       "infoPlist": {
         "NSCameraUsageDescription": "SENTINEL uses the camera to scan strip QR codes and capture colorimetric strip images for exposure estimation.",
+        "NSBluetoothAlwaysUsageDescription": "SENTINEL uses Bluetooth to detect nearby zone beacons for worker location.",
+        "NSBluetoothPeripheralUsageDescription": "SENTINEL uses Bluetooth to detect nearby zone beacons for worker location.",
+        "NSLocationWhenInUseUsageDescription": "Location permission is required on Android/iOS for BLE scanning of zone beacons.",
         "NSMotionUsageDescription": "SENTINEL can optionally monitor motion to detect if a worker has been still for an unusually long time (dead man's switch) as an H2S safety feature."
       }
     },
@@ -35,6 +44,17 @@
         "expo-camera",
         {
           "cameraPermission": "SENTINEL uses the camera to scan strip QR codes and capture colorimetric strip photos."
+        }
+      ],
+      [
+        "react-native-ble-plx",
+        {
+          "isBackgroundEnabled": false,
+          "modes": [
+            "peripheral",
+            "central"
+          ],
+          "bluetoothAlwaysPermission": "SENTINEL uses Bluetooth to detect nearby zone beacons for worker location."
         }
       ]
     ],

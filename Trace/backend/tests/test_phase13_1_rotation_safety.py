@@ -111,7 +111,7 @@ def test_legacy_open_not_ai_evacuation():
     zone = {
         "zone_id": "z1",
         "risk_level": "HIGH",
-        "evacuation_status": "OPEN", # legacy
+        "evacuation_status": "OPEN",  # legacy
         "capacity": 4,
         "current_occupancy": 0,
         "permit_required": False,
@@ -299,7 +299,7 @@ def test_multi_worker_atomic_failure():
             z["current_occupancy"] = 0
             break
     # Stale because capacity changed
-    attach_snapshot(plan, d) # refresh so we test atomic capacity not stale
+    attach_snapshot(plan, d)  # refresh so we test atomic capacity not stale
     plan["approval_status"] = "VALIDATED"
     result = apply_plan(plan, d, actor="sup")
     # Either blocked for capacity/atomic or applied if capacity still ok
@@ -356,7 +356,7 @@ def test_audit_on_block():
 
 
 # ---------------------------------------------------------------------------
-# 28. physical mismatch surfaced
+# 28. BLE mismatch surfaced
 # ---------------------------------------------------------------------------
 def test_ble_mismatch_surfaced():
     d, plan = _plan("ROTATION_LOCATION_MISMATCH")

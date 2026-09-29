@@ -185,7 +185,7 @@ def test_exposure_duration_and_movement():
     t0 = datetime.utcnow() - timedelta(minutes=20)
     # Location timeline (Phase 3.1): historical events required for exposure association
     db.add(models.WorkerLocationEvent(
-        worker_id=w.id, new_zone_id=z_a.id, source=models.LocationSource.DEMO,
+        worker_id=w.id, new_zone_id=z_a.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=t0 - timedelta(minutes=1), sync_status=models.SyncStatus.SYNCED,
     ))
     db.commit()
@@ -200,7 +200,7 @@ def test_exposure_duration_and_movement():
     # Move worker to B via location event (not only Worker.zone_id)
     db.add(models.WorkerLocationEvent(
         worker_id=w.id, previous_zone_id=z_a.id, new_zone_id=z_b.id,
-        source=models.LocationSource.DEMO,
+        source=models.LocationSource.DEMO_BLE,
         occurred_at=t0 + timedelta(minutes=12), sync_status=models.SyncStatus.SYNCED,
     ))
     w = db.query(models.Worker).filter(models.Worker.id == w.id).first()

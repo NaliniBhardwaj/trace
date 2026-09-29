@@ -47,7 +47,7 @@ def setup_db():
     db.add(w)
     db.flush()
     db.add(models.WorkerLocationEvent(
-        worker_id=w.id, new_zone_id=za.id, source=models.LocationSource.DEMO,
+        worker_id=w.id, new_zone_id=za.id, source=models.LocationSource.DEMO_BLE,
         occurred_at=datetime.utcnow() - timedelta(hours=1),
         sync_status=models.SyncStatus.SYNCED,
     ))
@@ -138,7 +138,7 @@ def test_repeated_critical_no_duplicate_open_evac():
         models.EvacuationEvent.zone_id == za.id,
         models.EvacuationEvent.status == models.EvacuationStatus.OPEN,
     ).count()
-    assert after == before # no new open events while remaining CRITICAL
+    assert after == before  # no new open events while remaining CRITICAL
     db.close()
 
 
@@ -170,7 +170,7 @@ def test_critical_recovery_does_not_auto_resolve():
         )
         .count()
     )
-    assert still_open == open_before # human must resolve
+    assert still_open == open_before  # human must resolve
     resolved = (
         db.query(models.EvacuationEvent)
         .filter(

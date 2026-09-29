@@ -1,4 +1,4 @@
-"""Phase 2: Worker location update, current location, and history."""
+"""Phase 2: Worker BLE location update, current location, and history."""
 from datetime import datetime, timedelta
 from typing import List, Optional
 
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/workers", tags=["location"])
 
 # Location considered CURRENT if last event within this window
 STALE_AFTER_SECONDS = 120
-VALID_SOURCES = {"QR_SCAN", "DEMO", "MANUAL", "SYSTEM"}
+VALID_SOURCES = {"REAL_BLE", "DEMO_BLE", "MANUAL", "SYSTEM"}
 VALID_SIGNAL = {"VERY_STRONG", "STRONG", "MEDIUM", "WEAK", "UNKNOWN"}
 
 
@@ -59,7 +59,7 @@ def update_worker_location(
     if not _can_update_worker_location(user, worker):
         raise HTTPException(status_code=403, detail="Not allowed to update this worker's location")
 
-    source = (body.source or "QR_SCAN").upper()
+    source = (body.source or "REAL_BLE").upper()
     if source not in VALID_SOURCES:
         raise HTTPException(status_code=400, detail=f"Invalid source; allowed: {sorted(VALID_SOURCES)}")
 
@@ -71,11 +71,11 @@ def update_worker_location(
     if not zone:
         raise HTTPException(status_code=400, detail="Zone not found")
 
-    # Validate zone marker belongs to zone when both provided
+    # Validate beacon belongs to zone when both provided
     if body.beacon_id and zone.beacon_id and body.beacon_id != zone.beacon_id:
         raise HTTPException(
             status_code=400,
-            detail=f"Zone marker {body.beacon_id} does not belong to zone {zone.code} (expected {zone.beacon_id})",
+            detail=f"Beacon {body.beacon_id} does not belong to zone {zone.code} (expected {zone.beacon_id})",
         )
 
     signal = body.signal_strength

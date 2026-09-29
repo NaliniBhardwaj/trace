@@ -56,7 +56,7 @@ def setup_db():
     db.flush()
     for w, z in [(wa, za), (wb, zn)]:
         db.add(models.WorkerLocationEvent(
-            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO,
+            worker_id=w.id, new_zone_id=z.id, source=models.LocationSource.DEMO_BLE,
             occurred_at=datetime.utcnow() - timedelta(hours=1),
             sync_status=models.SyncStatus.SYNCED,
         ))
@@ -138,7 +138,7 @@ def test_confirm_creates_assignment_without_moving_ble():
     assert b_asg is not None
     assert b_asg.zone_id == za.id
 
-    # Physical location of B unchanged
+    # Physical BLE location of B unchanged
     db.refresh(wb)
     assert wb.zone_id == physical_b_before == zn.id
     db.close()
