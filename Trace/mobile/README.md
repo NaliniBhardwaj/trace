@@ -24,6 +24,7 @@ src/
 ## Real camera + QR scanning
 
 `expo-camera`'s `CameraView` handles both:
+
 1. QR scanning (`barcodeScannerSettings={{ barcodeTypes: ['qr'] }}`) — the QR
    identifies the strip/cartridge (`strip_id`, `batch_id`, `profile_id`), never
    the worker.
@@ -67,7 +68,7 @@ input once it re-validates on sync.
 ## Demo mode
 
 The scan screen's QR view has demo chips (LOW/ELEVATED/HIGH/CRITICAL) that
-run a synthetic optical-response value through the *exact same* calibration
+run a synthetic optical-response value through the _exact same_ calibration
 and risk-engine code path as a real capture — they don't take a shortcut
 around the pipeline. Every demo result is saved with `is_demo: true` and
 rendered with a "DEMO / SIMULATED" banner.
@@ -75,7 +76,7 @@ rendered with a "DEMO / SIMULATED" banner.
 ## Known limitations in this environment
 
 This was built in a sandbox without an Android emulator or physical device,
-so it could not be run/tapped through interactively. What *was* verified here:
+so it could not be run/tapped through interactively. What _was_ verified here:
 
 - `npx tsc --noEmit` — zero type errors across the whole app.
 - `npx expo export --platform android` — Metro successfully bundles all 2,241
@@ -88,3 +89,4 @@ on-screen frame alignment for the QR/ROI overlays, and physical lighting
 conditions for the strip-analysis quality check thresholds in
 `src/cv/analyze.ts` (`checkQuality`) — these are reasonable starting values,
 not tuned against real strips.
+...
